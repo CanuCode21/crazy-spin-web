@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crazy Spin - Live Studio Simulator</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎡</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="studio-backdrop"></div>
+
+<div class="main-container">
+    <header class="game-header">
+        <div class="logo-badge">LIVE SHOW</div>
+        <h1>CRAZY SPIN</h1>
+    </header>
+
+    <div class="game-layout">
+        <!-- Palcoscenico della ruota principale -->
+        <section class="wheel-stage">
+            <div class="wheel-glow"></div>
+            <div class="wheel-container">
+                <div class="wheel-pointer"></div>
+                <canvas id="ruotaCanvas" width="500" height="500"></canvas>
+            </div>
+        </section>
+
+        <!-- Plancia di controllo, puntate e feedback -->
+        <section class="control-deck">
+            <div class="top-info">
+                <div class="info-box">
+                    <label for="saldo">SALDO DISPONIBILE</label>
+                    <div class="saldo-wrapper">
+                        <input type="number" id="saldo" value="500" readonly>
+                        <span>€</span>
+                    </div>
+                </div>
+                <div class="info-box right">
+                    <span class="info-label">FICHE SELEZIONATA</span>
+                    <strong id="labelChipSelezionata" class="active-chip-value">10 €</strong>
+                </div>
+            </div>
+
+            <div class="quick-bet-bar">
+                <button type="button" class="btn-quick" onclick="caricaTuttiNumeri()">+ TUTTI I NUMERI</button>
+                <button type="button" class="btn-quick" onclick="caricaTuttiBonus()">+ TUTTI I BONUS</button>
+            </div>
+
+            <div class="bet-grid">
+                <div class="bet-card tile-1" onclick="aggiungiPuntata('p1')">
+                    <span class="payout-tag">1:1</span>
+                    <div class="bet-title">1</div>
+                    <div class="bet-amount" id="amt-p1">0 €</div>
+                </div>
+                <div class="bet-card tile-2" onclick="aggiungiPuntata('p2')">
+                    <span class="payout-tag">2:1</span>
+                    <div class="bet-title">2</div>
+                    <div class="bet-amount" id="amt-p2">0 €</div>
+                </div>
+                <div class="bet-card tile-5" onclick="aggiungiPuntata('p5')">
+                    <span class="payout-tag">5:1</span>
+                    <div class="bet-title">5</div>
+                    <div class="bet-amount" id="amt-p5">0 €</div>
+                </div>
+                <div class="bet-card tile-10" onclick="aggiungiPuntata('p10')">
+                    <span class="payout-tag">10:1</span>
+                    <div class="bet-title">10</div>
+                    <div class="bet-amount" id="amt-p10">0 €</div>
+                </div>
+                <div class="bet-card tile-cf" onclick="aggiungiPuntata('pCF')">
+                    <span class="payout-tag">BONUS</span>
+                    <div class="bet-title">COIN CLASH</div>
+                    <div class="bet-amount" id="amt-pCF">0 €</div>
+                </div>
+                <div class="bet-card tile-pc" onclick="aggiungiPuntata('pPC')">
+                    <span class="payout-tag">BONUS</span>
+                    <div class="bet-title">PACHIN SPIN</div>
+                    <div class="bet-amount" id="amt-pPC">0 €</div>
+                </div>
+                <div class="bet-card tile-ch" onclick="aggiungiPuntata('pCH')">
+                    <span class="payout-tag">BONUS</span>
+                    <div class="bet-title">TARGET HUNT</div>
+                    <div class="bet-amount" id="amt-pCH">0 €</div>
+                </div>
+                <div class="bet-card tile-ct" onclick="aggiungiPuntata('pCT')">
+                    <span class="payout-tag">MEGA BONUS</span>
+                    <div class="bet-title">CRAZY SPIN</div>
+                    <div class="bet-amount" id="amt-pCT">0 €</div>
+                </div>
+            </div>
+
+            <div class="chip-bar">
+                <div class="chip chip-5" onclick="selezionaChip(5, this)">5</div>
+                <div class="chip chip-10 selected" onclick="selezionaChip(10, this)">10</div>
+                <div class="chip chip-25" onclick="selezionaChip(25, this)">25</div>
+                <div class="chip chip-50" onclick="selezionaChip(50, this)">50</div>
+                <div class="chip chip-100" onclick="selezionaChip(100, this)">100</div>
+                <div class="chip chip-500" onclick="selezionaChip(500, this)">500</div>
+            </div>
+
+            <div class="action-buttons">
+                <button type="button" class="btn-clear" onclick="pulisciPuntate()">AZZERA</button>
+                <button type="button" id="btnRipeti" class="btn-repeat" onclick="ripetiPuntata()" disabled>RIPETI PUNTATA</button>
+                <button type="button" id="btnGira" class="btn-spin" onclick="giraRuota()">GIRA LA RUOTA</button>
+            </div>
+
+            <div class="feedback-area">
+                <div id="risultato" style="display:none;">
+                    <h3>Esito Giro</h3>
+                    <p id="txtEsito"></p>
+                </div>
+
+                <div id="sezione-bonus">
+                    <h3 id="titolo-bonus">Bonus Attivato!</h3>
+                    <p id="txtInfoBonus"></p>
+                    <div id="form-scelta-bonus"></div>
+                    <button type="button" id="btnGiocaBonus" onclick="giocaBonusCorrente()" class="btn-spin btn-bonus-play" style="display:none;">GIOCA IL BONUS</button>
+                    <div id="risultato-bonus"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
